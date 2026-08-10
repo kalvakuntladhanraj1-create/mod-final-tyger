@@ -1,192 +1,1561 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Legal Scrutiny Report Generator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Legal Scrutiny Report Generator</title><style>
+    :root {
+        --bg: #f4f7fb;
+        --card: #ffffff;
+        --text: #172033;
+        --muted: #6b7280;
+        --border: #e2e8f0;
+        --primary: #2563eb;
+        --primary-dark: #1d4ed8;
+        --success: #16a34a;
+        --danger: #dc2626;
+        --soft-blue: #eff6ff;
+        --soft-green: #f0fdf4;
+        --shadow: 0 10px 35px rgba(15, 23, 42, 0.07);
+        --radius: 14px;
+    }
 
-<style>
-body {
-    font-family: Arial;
-    background: #eef2f7;
-    margin: 0;
-}
+    * {
+        box-sizing: border-box;
+    }
 
-.container {
-    max-width: 1100px;
-    margin: 20px auto;
-    background: #fff;
-    padding: 25px;
-    border-radius: 10px;
-}
+    body {
+        margin: 0;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system,
+                     BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.5;
+    }
 
-h2 {
-    border-left: 4px solid #007bff;
-    padding-left: 10px;
-}
+    /* ---------- HEADER ---------- */
 
-.grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
-    gap: 10px;
-}
+    .topbar {
+        background: #ffffff;
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        backdrop-filter: blur(12px);
+    }
 
-input, select {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    width: 100%;
-}
+    .topbar-inner {
+        max-width: 1180px;
+        margin: auto;
+        padding: 16px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+    }
 
-.doc-card {
-    border: 1px solid #ddd;
-    padding: 15px;
-    margin-top: 10px;
-    border-radius: 6px;
-    background: #f9fafb;
-}
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
 
-button {
-    margin-top: 20px;
-    padding: 12px;
-    width: 100%;
-    background: #007bff;
-    color: white;
-    border: none;
-    border-radius: 6px;
-}
+    .brand-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #2563eb, #4f46e5);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 18px;
+        box-shadow: 0 6px 18px rgba(37, 99, 235, 0.22);
+    }
 
-.add-btn {
-    background: #28a745;
-}
-</style>
-</head>
+    .brand-text h1 {
+        margin: 0;
+        font-size: 17px;
+        font-weight: 750;
+        letter-spacing: -0.2px;
+    }
 
-<body>
+    .brand-text p {
+        margin: 1px 0 0;
+        color: var(--muted);
+        font-size: 12px;
+    }
 
-<div class="container">
-<form method="POST" action="/generate_sale">
+    .status-pill {
+        padding: 7px 11px;
+        border-radius: 999px;
+        background: var(--soft-green);
+        color: #15803d;
+        font-size: 12px;
+        font-weight: 700;
+    }
 
-<h2>Basic</h2>
-<div class="grid">
-<input name="DATE" placeholder="Date">
-<input name="APPLICATION_NO" placeholder="Application No">
-<input name="APPLICANT_NAME" placeholder="Applicant Name">
-<input name="APPLICANT_BOLD_OWNER" placeholder="Owner">
-<input name="LOAN_AMOUNT" placeholder="Loan Amount">
+    /* ---------- PAGE ---------- */
+
+    .page {
+        max-width: 1180px;
+        margin: 28px auto 60px;
+        padding: 0 24px;
+    }
+
+    .page-title {
+        margin-bottom: 22px;
+    }
+
+    .page-title h2 {
+        margin: 0;
+        font-size: 28px;
+        letter-spacing: -0.7px;
+    }
+
+    .page-title p {
+        margin: 6px 0 0;
+        color: var(--muted);
+        font-size: 14px;
+    }
+
+    /* ---------- SECTIONS ---------- */
+
+    .section {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        margin-bottom: 18px;
+        overflow: hidden;
+    }
+
+    .section-header {
+        padding: 17px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .section-number {
+        width: 30px;
+        height: 30px;
+        border-radius: 9px;
+        background: var(--soft-blue);
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 800;
+        flex-shrink: 0;
+    }
+
+    .section-header h3 {
+        margin: 0;
+        font-size: 15px;
+        font-weight: 750;
+    }
+
+    .section-header p {
+        margin: 2px 0 0;
+        color: var(--muted);
+        font-size: 12px;
+    }
+
+    .section-body {
+        padding: 20px;
+    }
+
+    /* ---------- FORM ---------- */
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    .field {
+        min-width: 0;
+    }
+
+    .field.full {
+        grid-column: 1 / -1;
+    }
+
+    .field label {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 12px;
+        font-weight: 700;
+        color: #374151;
+    }
+
+    .required {
+        color: var(--danger);
+    }
+
+    input,
+    select {
+        width: 100%;
+        height: 42px;
+        padding: 0 12px;
+        border: 1px solid #d7dee9;
+        border-radius: 9px;
+        background: #fff;
+        color: var(--text);
+        font-family: inherit;
+        font-size: 13px;
+        outline: none;
+        transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    input::placeholder {
+        color: #a0a8b5;
+    }
+
+    input:focus,
+    select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+    }
+
+    /* ---------- TOGGLE ---------- */
+
+    .toggle-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 14px 16px;
+        border: 1px solid var(--border);
+        border-radius: 11px;
+        background: #fafbfc;
+        margin-bottom: 16px;
+    }
+
+    .toggle-info strong {
+        display: block;
+        font-size: 13px;
+    }
+
+    .toggle-info span {
+        display: block;
+        margin-top: 2px;
+        color: var(--muted);
+        font-size: 11px;
+    }
+
+    .switch {
+        position: relative;
+        width: 48px;
+        height: 27px;
+        flex-shrink: 0;
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+        position: absolute;
+    }
+
+    .slider {
+        position: absolute;
+        inset: 0;
+        background: #cbd5e1;
+        border-radius: 999px;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .slider::before {
+        content: "";
+        position: absolute;
+        width: 21px;
+        height: 21px;
+        left: 3px;
+        top: 3px;
+        background: white;
+        border-radius: 50%;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.18);
+        transition: 0.2s;
+    }
+
+    .switch input:checked + .slider {
+        background: var(--success);
+    }
+
+    .switch input:checked + .slider::before {
+        transform: translateX(21px);
+    }
+
+    /* ---------- CONDITIONAL AREA ---------- */
+
+    .conditional {
+        display: none;
+        padding-top: 4px;
+    }
+
+    .conditional.active {
+        display: block;
+    }
+
+    /* ---------- DOCUMENTS ---------- */
+
+    .documents-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        margin-bottom: 14px;
+    }
+
+    .documents-count {
+        color: var(--muted);
+        font-size: 12px;
+    }
+
+    .add-document {
+        border: 0;
+        background: var(--primary);
+        color: white;
+        padding: 9px 14px;
+        border-radius: 9px;
+        font-family: inherit;
+        font-size: 12px;
+        font-weight: 750;
+        cursor: pointer;
+        transition: 0.15s;
+    }
+
+    .add-document:hover {
+        background: var(--primary-dark);
+    }
+
+    .document-card {
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        margin-bottom: 12px;
+        overflow: hidden;
+        background: #fff;
+    }
+
+    .document-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 15px;
+        background: #f8fafc;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .document-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .document-number {
+        width: 27px;
+        height: 27px;
+        border-radius: 8px;
+        background: var(--primary);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 800;
+    }
+
+    .document-title strong {
+        font-size: 13px;
+    }
+
+    .document-date-display {
+        font-size: 11px;
+        color: var(--muted);
+    }
+
+    .remove-document {
+        border: 0;
+        background: transparent;
+        color: #94a3b8;
+        cursor: pointer;
+        font-size: 18px;
+        padding: 3px 7px;
+        border-radius: 6px;
+    }
+
+    .remove-document:hover {
+        color: var(--danger);
+        background: #fef2f2;
+    }
+
+    .document-body {
+        padding: 16px;
+    }
+
+    .deed-fields {
+        display: none;
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px dashed #dbe2ea;
+    }
+
+    .deed-fields.active {
+        display: block;
+    }
+
+    .field-note {
+        margin-top: 5px;
+        font-size: 10px;
+        color: var(--muted);
+    }
+
+    /* ---------- SORT NOTICE ---------- */
+
+    .sort-notice {
+        padding: 11px 13px;
+        border-radius: 9px;
+        background: var(--soft-blue);
+        color: #1e40af;
+        font-size: 11px;
+        margin-bottom: 14px;
+    }
+
+    /* ---------- ACTION ---------- */
+
+    .bottom-action {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 18px;
+    }
+
+    .generate-btn {
+        width: 100%;
+        height: 48px;
+        border: 0;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #2563eb, #4f46e5);
+        color: white;
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 800;
+        cursor: pointer;
+        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.20);
+        transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .generate-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 11px 25px rgba(37, 99, 235, 0.25);
+    }
+
+    .generate-help {
+        text-align: center;
+        color: var(--muted);
+        font-size: 11px;
+        margin: 9px 0 0;
+    }
+
+    /* ---------- RESPONSIVE ---------- */
+
+    @media (max-width: 850px) {
+        .grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 600px) {
+        .topbar-inner {
+            padding: 13px 16px;
+        }
+
+        .status-pill {
+            display: none;
+        }
+
+        .page {
+            margin-top: 20px;
+            padding: 0 13px;
+        }
+
+        .page-title h2 {
+            font-size: 23px;
+        }
+
+        .grid {
+            grid-template-columns: 1fr;
+        }
+
+        .section-body {
+            padding: 15px;
+        }
+
+        .section-header {
+            padding: 14px 15px;
+        }
+
+        .field.full {
+            grid-column: auto;
+        }
+    }
+</style></head><body><header class="topbar">
+    <div class="topbar-inner">
+        <div class="brand">
+            <div class="brand-icon">LS</div>
+            <div class="brand-text">
+                <h1>Legal Scrutiny Report</h1>
+                <p>Tyger Home Finance · Kurnool</p>
+            </div>
+        </div>    <div class="status-pill">
+        Report Generator
+    </div>
 </div>
 
-<h2>Property</h2>
-<div class="grid">
-<input name="DOOR_NO" placeholder="Door No">
-<input name="PLOT_NO" placeholder="Plot No">
-<input name="ASSESSMENT_NO" placeholder="Assessment No">
-<input name="EXTENT_YARDS" placeholder="Extent Yards">
-<input name="SURVEY_NO" placeholder="Survey No">
-<input name="ADDRESS" placeholder="Address">
-<input name="VILLAGE" placeholder="Village">
-<input name="GRAM_PANCHAYAT" placeholder="Gram Panchayat">
-<input name="MANDAL" placeholder="Mandal">
-<input name="SRO" placeholder="SRO">
-<input name="RO" placeholder="RO">
-<input name="DISTRICT" placeholder="District">
+</header><main class="page"><div class="page-title">
+    <h2>Create Legal Scrutiny Report</h2>
+    <p>Enter the property and title information below. Optional sections can be enabled when applicable.</p>
 </div>
 
-<h2>Boundaries</h2>
-<div class="grid">
-<input name="EAST_BOUNDARY" placeholder="East">
-<input name="WEST_BOUNDARY" placeholder="West">
-<input name="NORTH_BOUNDARY" placeholder="North">
-<input name="SOUTH_BOUNDARY" placeholder="South">
-</div>
 
-<h2>Measurements</h2>
-<div class="grid">
-<input name="E_W" placeholder="E-W">
-<input name="N_S" placeholder="N-S">
-<input name="E_W_FEET" placeholder="E-W Feet">
-<input name="N_S_FEET" placeholder="N-S Feet">
-<input name="EXTENT_FEET" placeholder="Total Sqft">
-</div>
+<form method="POST" action="/generate_sale" id="reportForm">
 
-<h2>Deed</h2>
-<div class="grid">
-<input name="DEED_NO" placeholder="Deed No">
-<input name="DEED_DATE" placeholder="Deed Date">
-</div>
 
-<h2>Documents</h2>
-<div id="documents"></div>
-<button type="button" class="add-btn" onclick="addDoc()">+ Add Document</button>
+    <!-- =========================================================
+         1. BASIC INFORMATION
+    ========================================================== -->
 
-<h2>Extra</h2>
-<div class="grid">
-<input name="POSSESSION_DATE" placeholder="Possession Date">
-<input name="FROM_YEARS" placeholder="From Years">
-<input name="POSSESSION_NAME" placeholder="Possession Name">
+    <section class="section">
+        <div class="section-header">
+            <div class="section-number">1</div>
+            <div>
+                <h3>Basic Information</h3>
+                <p>Application and applicant details</p>
+            </div>
+        </div>
 
-<input name="H_T_DATE" placeholder="House Tax Date">
-<input name="HOUSE_TAX_RECIPT_NO" placeholder="Receipt No">
-<input name="FINANCIAL_YEARS" placeholder="Financial Years">
-<input name="HOUSE_TAX_NAME" placeholder="Tax Name">
-<input name="HOUSE_TAX_ISSUED_BY" placeholder="Issued By">
+        <div class="section-body">
+            <div class="grid">
 
-<input name="EC_DATE" placeholder="EC Date">
-<input name="EC_NO" placeholder="EC No">
-</div>
+                <div class="field">
+                    <label>Date</label>
+                    <input type="date" name="DATE">
+                </div>
 
-<h2>Electricity</h2>
-<div class="grid">
-<select name="HAS_ELECTRICITY_BILL">
-<option value="">No</option>
-<option value="true">Yes</option>
-</select>
-<input name="ELECTRICITY_BILL_DATE" placeholder="Bill Date">
-<input name="SERVICE_NO" placeholder="Service No">
-<input name="ELECTRICITY_NAME" placeholder="Name">
-</div>
+                <div class="field">
+                    <label>Application / LOS No.</label>
+                    <input name="APPLICATION_NO" placeholder="Application number">
+                </div>
 
-<h2>Mortgage</h2>
-<div class="grid">
-<select name="HAS_MORTGAGE">
-<option value="">No</option>
-<option value="true">Yes</option>
-</select>
-<input name="MORTGAGE_DEED_NO" placeholder="Mortgage Deed No">
-<input name="MORTGAGE_DEED_DATE" placeholder="Mortgage Date">
-<input name="MORTGAGE_COMPANY" placeholder="Company">
-</div>
+                <div class="field">
+                    <label>Applicant Name</label>
+                    <input name="APPLICANT_NAME" placeholder="Applicant name">
+                </div>
 
-<button type="submit">Generate Report</button>
+                <div class="field">
+                    <label>Current Owner</label>
+                    <input name="APPLICANT_BOLD_OWNER" placeholder="Current owner">
+                </div>
+
+                <div class="field">
+                    <label>Loan Amount</label>
+                    <input name="LOAN_AMOUNT" placeholder="Loan amount">
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+
+    <!-- =========================================================
+         2. PROPERTY
+    ========================================================== -->
+
+    <section class="section">
+        <div class="section-header">
+            <div class="section-number">2</div>
+            <div>
+                <h3>Property Details</h3>
+                <p>Schedule property information</p>
+            </div>
+        </div>
+
+        <div class="section-body">
+
+            <div class="grid">
+
+                <div class="field">
+                    <label>Property Type</label>
+                    <select name="PROPERTY_TYPE" id="propertyType">
+                        <option value="ancestral">Ancestral</option>
+                        <option value="self">Self-acquired</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>Door No.</label>
+                    <input name="DOOR_NO" placeholder="Door number">
+                </div>
+
+                <div class="field">
+                    <label>Plot No.</label>
+                    <input name="PLOT_NO" placeholder="Plot number">
+                </div>
+
+                <div class="field">
+                    <label>Assessment No.</label>
+                    <input name="ASSESSMENT_NO" placeholder="Assessment number">
+                </div>
+
+                <div class="field">
+                    <label>Extent (Square Yards)</label>
+                    <input name="EXTENT_YARDS" placeholder="Extent in sq. yards">
+                </div>
+
+                <div class="field">
+                    <label>Survey No.</label>
+                    <input name="SURVEY_NO" placeholder="Survey number">
+                </div>
+
+                <div class="field full">
+                    <label>Address</label>
+                    <input name="ADDRESS" placeholder="Property address">
+                </div>
+
+                <div class="field">
+                    <label>Village</label>
+                    <input name="VILLAGE" placeholder="Village">
+                </div>
+
+                <div class="field">
+                    <label>Gram Panchayat</label>
+                    <input name="GRAM_PANCHAYAT" placeholder="Gram Panchayat">
+                </div>
+
+                <div class="field">
+                    <label>Mandal</label>
+                    <input name="MANDAL" placeholder="Mandal">
+                </div>
+
+                <div class="field">
+                    <label>SRO</label>
+                    <input name="SRO" placeholder="Sub-Registration Office">
+                </div>
+
+                <div class="field">
+                    <label>RO</label>
+                    <input name="RO" placeholder="Registration District / RO">
+                </div>
+
+                <div class="field">
+                    <label>District</label>
+                    <input name="DISTRICT" placeholder="District">
+                </div>
+
+            </div>
+
+
+            <!-- SELF-ACQUIRED ROOT DETAILS -->
+
+            <div id="selfPropertyFields" class="conditional">
+
+                <div style="height:16px;"></div>
+
+                <div class="sort-notice">
+                    Self-acquired property selected. Enter the original/root owner's details and the deed through which the root owner acquired the property.
+                </div>
+
+                <div class="grid">
+
+                    <div class="field">
+                        <label>Root Owner</label>
+                        <input name="ROOT_OWNER" placeholder="Original / root owner">
+                    </div>
+
+                    <div class="field">
+                        <label>Root Document No.</label>
+                        <input name="ROOT_DOC_NUMBER" placeholder="Root document number">
+                    </div>
+
+                    <div class="field">
+                        <label>Root Document Date</label>
+                        <input type="date" name="ROOT_DOC_DATE">
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- =========================================================
+         3. SCHEDULE DEED
+    ========================================================== -->
+
+    <section class="section">
+        <div class="section-header">
+            <div class="section-number">3</div>
+            <div>
+                <h3>Schedule / Title Deed</h3>
+                <p>Primary deed referred to in the property schedule</p>
+            </div>
+        </div>
+
+        <div class="section-body">
+
+            <div class="grid">
+
+                <div class="field">
+                    <label>Deed No.</label>
+                    <input name="DEED_NO" placeholder="Deed number">
+                </div>
+
+                <div class="field">
+                    <label>Deed Date</label>
+                    <input type="date" name="DEED_DATE">
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- =========================================================
+         4. BOUNDARIES
+    ========================================================== -->
+
+    <section class="section">
+        <div class="section-header">
+            <div class="section-number">4</div>
+            <div>
+                <h3>Property Boundaries</h3>
+                <p>Four-side boundary description</p>
+            </div>
+        </div>
+
+        <div class="section-body">
+
+            <div class="grid">
+
+                <div class="field">
+                    <label>East</label>
+                    <input name="EAST_BOUNDARY" placeholder="East boundary">
+                </div>
+
+                <div class="field">
+                    <label>West</label>
+                    <input name="WEST_BOUNDARY" placeholder="West boundary">
+                </div>
+
+                <div class="field">
+                    <label>North</label>
+                    <input name="NORTH_BOUNDARY" placeholder="North boundary">
+                </div>
+
+                <div class="field">
+                    <label>South</label>
+                    <input name="SOUTH_BOUNDARY" placeholder="South boundary">
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- =========================================================
+         5. MEASUREMENTS
+    ========================================================== -->
+
+    <section class="section">
+        <div class="section-header">
+            <div class="section-number">5</div>
+            <div>
+                <h3>Measurements</h3>
+                <p>House site and construction measurements</p>
+            </div>
+        </div>
+
+        <div class="section-body">
+
+            <div class="grid">
+
+                <div class="field">
+                    <label>East–West (Site)</label>
+                    <input name="E_W" placeholder="Feet">
+                </div>
+
+                <div class="field">
+                    <label>North–South (Site)</label>
+                    <input name="N_S" placeholder="Feet">
+                </div>
+
+                <div class="field">
+                    <label>Total Site Extent</label>
+                    <input name="EXTENT_YARDS" placeholder="Square yards">
+                </div>
+
+                <div class="field">
+                    <label>East–West (Construction)</label>
+                    <input name="E_W_FEET" placeholder="Feet">
+                </div>
+
+                <div class="field">
+                    <label>North–South (Construction)</label>
+                    <input name="N_S_FEET" placeholder="Feet">
+                </div>
+
+                <div class="field">
+                    <label>Total Construction Area</label>
+                    <input name="EXTENT_FEET" placeholder="Square feet">
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- =========================================================
+         6. DOCUMENTS
+    ========================================================== -->
+
+    <section class="section">
+        <div class="section-header">
+            <div class="section-number">6</div>
+            <div>
+                <h3>Title / Supporting Documents</h3>
+                <p>Add documents in any order — they will be automatically arranged by date.</p>
+            </div>
+        </div>
+
+        <div class="section-body">
+
+            <div class="sort-notice">
+                <strong>Automatic chronological order:</strong>
+                Documents will be sorted from the oldest date to the newest date before the report is generated.
+                The oldest document becomes No. 1.
+            </div>
+
+            <div class="documents-toolbar">
+
+                <div class="documents-count">
+                    <span id="documentCount">1</span> document
+                </div>
+
+                <button type="button" class="add-document" onclick="addDocument()">
+                    + Add Document
+                </button>
+
+            </div>
+
+            <div id="documentsContainer"></div>
+
+        </div>
+    </section>
+
+
+    <!-- =========================================================
+         7. POSSESSION / TAX / EC
+    ========================================================== -->
+
+    <section class="section">
+        <div class="section-header">
+            <div class="section-number">7</div>
+            <div>
+                <h3>Supporting Property Records</h3>
+                <p>Possession, house tax and encumbrance certificate details</p>
+            </div>
+        </div>
+
+        <div class="section-body">
+
+            <div class="grid">
+
+                <div class="field">
+                    <label>Possession Certificate Date</label>
+                    <input type="date" name="POSSESSION_DATE">
+                </div>
+
+                <div class="field">
+                    <label>Possession From / Years</label>
+                    <input name="FROM_YEARS" placeholder="e.g. 15 years">
+                </div>
+
+                <div class="field">
+                    <label>Possession Name</label>
+                    <input name="POSSESSION_NAME" placeholder="Name">
+                </div>
+
+                <div class="field">
+                    <label>House Tax Date</label>
+                    <input type="date" name="H_T_DATE">
+                </div>
+
+                <div class="field">
+                    <label>House Tax Receipt No.</label>
+                    <input name="HOUSE_TAX_RECIPT_NO" placeholder="Receipt number">
+                </div>
+
+                <div class="field">
+                    <label>Financial Years</label>
+                    <input name="FINANCIAL_YEARS" placeholder="e.g. 2020-2025">
+                </div>
+
+                <div class="field">
+                    <label>House Tax Name</label>
+                    <input name="HOUSE_TAX_NAME" placeholder="Name">
+                </div>
+
+                <div class="field">
+                    <label>House Tax Issued By</label>
+                    <input name="HOUSE_TAX_ISSUED_BY" placeholder="Authority">
+                </div>
+
+                <div class="field">
+                    <label>EC Date</label>
+                    <input type="date" name="EC_DATE">
+                </div>
+
+                <div class="field">
+                    <label>EC Statement No.</label>
+                    <input name="EC_NO" placeholder="EC statement number">
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- =========================================================
+         8. ELECTRICITY
+    ========================================================== -->
+
+    <section class="section">
+        <div class="section-header">
+            <div class="section-number">8</div>
+            <div>
+                <h3>Electricity Bill</h3>
+                <p>Enable this section only if an electricity bill is available.</p>
+            </div>
+        </div>
+
+        <div class="section-body">
+
+            <div class="toggle-row">
+
+                <div class="toggle-info">
+                    <strong>Electricity Bill Available?</strong>
+                    <span>Turn on to enter electricity bill details.</span>
+                </div>
+
+                <label class="switch">
+                    <input
+                        type="checkbox"
+                        id="electricityToggle"
+                        name="HAS_ELECTRICITY_BILL"
+                        value="true"
+                    >
+                    <span class="slider"></span>
+                </label>
+
+            </div>
+
+            <div id="electricityFields" class="conditional">
+
+                <div class="grid">
+
+                    <div class="field">
+                        <label>Electricity Bill Date</label>
+                        <input type="date" name="ELECTRICITY_BILL_DATE">
+                    </div>
+
+                    <div class="field">
+                        <label>Service No.</label>
+                        <input name="SERVICE_NO" placeholder="Service number">
+                    </div>
+
+                    <div class="field">
+                        <label>Electricity Name</label>
+                        <input name="ELECTRICITY_NAME" placeholder="Name on bill">
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- =========================================================
+         9. MORTGAGE
+    ========================================================== -->
+
+    <section class="section">
+        <div class="section-header">
+            <div class="section-number">9</div>
+            <div>
+                <h3>Existing Mortgage / Charge</h3>
+                <p>Enable this section only when the property is mortgaged.</p>
+            </div>
+        </div>
+
+        <div class="section-body">
+
+            <div class="toggle-row">
+
+                <div class="toggle-info">
+                    <strong>Mortgage / Charge Present?</strong>
+                    <span>Turn on to enter existing mortgage details.</span>
+                </div>
+
+                <label class="switch">
+                    <input
+                        type="checkbox"
+                        id="mortgageToggle"
+                        name="HAS_MORTGAGE"
+                        value="true"
+                    >
+                    <span class="slider"></span>
+                </label>
+
+            </div>
+
+            <div id="mortgageFields" class="conditional">
+
+                <div class="grid">
+
+                    <div class="field">
+                        <label>Mortgage Deed No.</label>
+                        <input name="MORTGAGE_DEED_NO" placeholder="Mortgage deed number">
+                    </div>
+
+                    <div class="field">
+                        <label>Mortgage Deed Date</label>
+                        <input type="date" name="MORTGAGE_DEED_DATE">
+                    </div>
+
+                    <div class="field">
+                        <label>Mortgage Company / Bank</label>
+                        <input name="MORTGAGE_COMPANY" placeholder="Company / bank">
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- =========================================================
+         10. GENERATE
+    ========================================================== -->
+
+    <div class="bottom-action">
+
+        <button type="submit" class="generate-btn">
+            Generate Legal Scrutiny Report
+        </button>
+
+        <p class="generate-help">
+            The documents will be arranged chronologically before generating the Word report.
+        </p>
+
+    </div>
 
 </form>
-</div>
 
-<script>
-function addDoc() {
-    let div = document.createElement("div");
-    div.className = "doc-card";
+</main><script>
 
-    div.innerHTML = `
-        <div class="grid">
-            <select name="doc_type[]">
-                <option value="Sale">Sale</option>
-                <option value="Gift">Gift</option>
-            </select>
+/* ============================================================
+   DOCUMENT CONFIGURATION
+   ============================================================ */
 
-            <input name="doc_number[]" placeholder="Doc No">
-            <input name="doc_date[]" placeholder="Date">
-            <input name="doc_executant[]" placeholder="Executant">
-            <input name="doc_owner[]" placeholder="Owner">
-            <input name="doc_relation[]" placeholder="Relation">
-            <input name="doc_worth[]" placeholder="Amount">
+const deedConfig = {
+
+    Sale: {
+        fields: [
+            ["number", "Document No.", "text"],
+            ["date", "Document Date", "date"],
+            ["executant", "Executant", "text"],
+            ["owner", "Owner / Purchaser", "text"],
+            ["worth", "Sale Consideration", "text"]
+        ]
+    },
+
+    Gift: {
+        fields: [
+            ["number", "Document No.", "text"],
+            ["date", "Document Date", "date"],
+            ["executant", "Executant / Donor", "text"],
+            ["owner", "Donee / Owner", "text"],
+            ["relation", "Relation", "text"],
+            ["worth", "Value of Gift", "text"]
+        ]
+    },
+
+    Rectification: {
+        fields: [
+            ["number", "Rectification Deed No.", "text"],
+            ["date", "Rectification Date", "date"],
+            ["type_rectified", "Type of Deed Rectified", "text"],
+            ["mistake_mentioned", "Mistake Mentioned", "text"]
+        ]
+    },
+
+    Partition: {
+        fields: [
+            ["number", "Partition Deed No.", "text"],
+            ["date", "Partition Date", "date"],
+            ["executant", "Parties / Executants", "text"],
+            ["schedule_item", "Schedule Item(s)", "text"],
+            ["owner", "Person to Whom Share Fell", "text"]
+        ]
+    },
+
+    SaleAgreement: {
+        fields: [
+            ["date", "Agreement Date", "date"],
+            ["executant", "Agreement Executant / Vendor", "text"],
+            ["owner", "Purchaser", "text"],
+            ["worth", "Sale Consideration", "text"],
+            ["amount_paid", "Advance Amount Paid", "text"]
+        ]
+    },
+
+    Relinquishment: {
+        fields: [
+            ["number", "Relinquishment Deed No.", "text"],
+            ["date", "Relinquishment Date", "date"],
+            ["executant", "Releasor / Executant", "text"],
+            ["owner", "Releasee / Owner", "text"],
+            ["worth", "Consideration", "text"]
+        ]
+    },
+
+    DepositofTitle: {
+        fields: [
+            ["number", "MODT / Deposit of Title Deed No.", "text"],
+            ["date", "Document Date", "date"],
+            ["executant", "Mortgagor / Executant", "text"],
+            ["favour", "In Favour Of / Bank", "text"]
+        ]
+    },
+
+    LOD: {
+        fields: [
+            ["date", "LOD Date", "date"],
+            ["executant", "Issued By / Institution", "text"],
+            ["favour", "In Favour Of", "text"]
+        ]
+    }
+};
+
+
+/* ============================================================
+   ADD DOCUMENT
+   ============================================================ */
+
+function addDocument() {
+
+    const container = document.getElementById("documentsContainer");
+
+    const card = document.createElement("div");
+    card.className = "document-card";
+
+    card.innerHTML = `
+        <div class="document-header">
+
+            <div class="document-title">
+
+                <div class="document-number">
+                    #
+                </div>
+
+                <div>
+                    <strong>Document</strong>
+                    <div class="document-date-display">
+                        Date not selected
+                    </div>
+                </div>
+
+            </div>
+
+            <button
+                type="button"
+                class="remove-document"
+                title="Remove document"
+            >
+                ×
+            </button>
+
+        </div>
+
+        <div class="document-body">
+
+            <div class="grid">
+
+                <div class="field full">
+
+                    <label>
+                        Deed / Document Type
+                        <span class="required">*</span>
+                    </label>
+
+                    <select class="doc-type" name="doc_type[]" required>
+
+                        <option value="Sale">
+                            Sale Deed
+                        </option>
+
+                        <option value="Gift">
+                            Gift Deed
+                        </option>
+
+                        <option value="Rectification">
+                            Rectification Deed
+                        </option>
+
+                        <option value="Partition">
+                            Partition Deed
+                        </option>
+
+                        <option value="SaleAgreement">
+                            Agreement of Sale
+                        </option>
+
+                        <option value="Relinquishment">
+                            Relinquishment Deed
+                        </option>
+
+                        <option value="DepositofTitle">
+                            Deposit of Title Deed / MODT
+                        </option>
+
+                        <option value="LOD">
+                            LOD
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+            <div class="deed-fields active"></div>
+
         </div>
     `;
 
-    document.getElementById("documents").appendChild(div);
+    container.appendChild(card);
+
+    const typeSelect = card.querySelector(".doc-type");
+    const fieldsContainer = card.querySelector(".deed-fields");
+
+    typeSelect.addEventListener("change", function() {
+        renderDeedFields(card, this.value);
+    });
+
+    card.querySelector(".remove-document").addEventListener("click", function() {
+
+        const cards = document.querySelectorAll(".document-card");
+
+        if (cards.length === 1) {
+            alert("At least one document card must remain.");
+            return;
+        }
+
+        card.remove();
+        updateDocumentNumbers();
+
+    });
+
+    renderDeedFields(card, typeSelect.value);
+
+    updateDocumentNumbers();
 }
 
-addDoc();
-</script>
 
-</body>
+/* ============================================================
+   RENDER DEED-SPECIFIC FIELDS
+   ============================================================ */
+
+function renderDeedFields(card, deedType) {
+
+    const container = card.querySelector(".deed-fields");
+
+    const config = deedConfig[deedType];
+
+    if (!config) {
+        container.innerHTML = "";
+        return;
+    }
+
+    container.innerHTML = "";
+
+    const grid = document.createElement("div");
+    grid.className = "grid";
+
+    config.fields.forEach(field => {
+
+        const key = field[0];
+        const label = field[1];
+        const inputType = field[2];
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "field";
+
+        wrapper.innerHTML = `
+            <label>
+                ${label}
+            </label>
+
+            <input
+                type="${inputType}"
+                class="doc-${key}"
+                name="doc_${key}[]"
+                placeholder="${label}"
+            >
+        `;
+
+        grid.appendChild(wrapper);
+    });
+
+    container.appendChild(grid);
+
+    /*
+     * Update the small date shown in the document header.
+     */
+
+    const dateInput = card.querySelector(".doc-date");
+
+    if (dateInput) {
+
+        dateInput.addEventListener("change", function() {
+
+            const display = card.querySelector(".document-date-display");
+
+            if (this.value) {
+
+                display.textContent =
+                    formatDateForDisplay(this.value);
+
+            } else {
+
+                display.textContent =
+                    "Date not selected";
+
+            }
+
+            updateDocumentNumbers();
+
+        });
+    }
+}
+
+
+/* ============================================================
+   DATE DISPLAY
+   ============================================================ */
+
+function formatDateForDisplay(value) {
+
+    if (!value) {
+        return "Date not selected";
+    }
+
+    const parts = value.split("-");
+
+    if (parts.length !== 3) {
+        return value;
+    }
+
+    return `${parts[2]}-${parts[1]}-${parts[0]}`;
+}
+
+
+/* ============================================================
+   DOCUMENT NUMBER DISPLAY
+   ============================================================ */
+
+function updateDocumentNumbers() {
+
+    const cards =
+        document.querySelectorAll(".document-card");
+
+    cards.forEach((card, index) => {
+
+        const number =
+            card.querySelector(".document-number");
+
+        number.textContent = index + 1;
+
+    });
+
+    const count =
+        document.querySelectorAll(".document-card").length;
+
+    document.getElementById("documentCount").textContent =
+        count === 1
+            ? "1"
+            : count;
+}
+
+
+/* ============================================================
+   SORT DOCUMENTS BY DATE
+   OLDEST → NEWEST
+   ============================================================ */
+
+function sortDocumentsByDate() {
+
+    const container =
+        document.getElementById("documentsContainer");
+
+    const cards =
+        Array.from(
+            container.querySelectorAll(".document-card")
+        );
+
+    cards.sort(function(a, b) {
+
+        const dateA =
+            a.querySelector(".doc-date")?.value || "";
+
+        const dateB =
+            b.querySelector(".doc-date")?.value || "";
+
+        /*
+         * Documents without dates are placed at the bottom.
+         */
+
+        if (!dateA && !dateB) {
+            return 0;
+        }
+
+        if (!dateA) {
+            return 1;
+        }
+
+        if (!dateB) {
+            return -1;
+        }
+
+        return dateA.localeCompare(dateB);
+
+    });
+
+    cards.forEach(function(card) {
+        container.appendChild(card);
+    });
+
+    updateDocumentNumbers();
+}
+
+
+/* ============================================================
+   ELECTRICITY TOGGLE
+   ============================================================ */
+
+const electricityToggle =
+    document.getElementById("electricityToggle");
+
+const electricityFields =
+    document.getElementById("electricityFields");
+
+electricityToggle.addEventListener("change", function() {
+
+    electricityFields.classList.toggle(
+        "active",
+        this.checked
+    );
+
+});
+
+
+/* ============================================================
+   MORTGAGE TOGGLE
+   ============================================================ */
+
+const mortgageToggle =
+    document.getElementById("mortgageToggle");
+
+const mortgageFields =
+    document.getElementById("mortgageFields");
+
+mortgageToggle.addEventListener("change", function() {
+
+    mortgageFields.classList.toggle(
+        "active",
+        this.checked
+    );
+
+});
+
+
+/* ============================================================
+   PROPERTY TYPE
+   ============================================================ */
+
+const propertyType =
+    document.getElementById("propertyType");
+
+const selfPropertyFields =
+    document.getElementById("selfPropertyFields");
+
+function updatePropertyFields() {
+
+    selfPropertyFields.classList.toggle(
+        "active",
+        propertyType.value === "self"
+    );
+
+}
+
+propertyType.addEventListener(
+    "change",
+    updatePropertyFields
+);
+
+updatePropertyFields();
+
+
+/* ============================================================
+   FORM SUBMISSION
+   SORT FIRST
+   ============================================================ */
+
+document.getElementById("reportForm")
+.addEventListener("submit", function(event) {
+
+    /*
+     * IMPORTANT:
+     * Sort the cards before Flask receives them.
+     */
+
+    sortDocumentsByDate();
+
+});
+
+
+/* ============================================================
+   INITIAL DOCUMENT
+   ============================================================ */
+
+addDocument();
+
+</script></body>
 </html>

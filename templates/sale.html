@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Legal Scrutiny Report Generator</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #eef2f7;
+    margin: 0;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 20px auto;
+    background: #fff;
+    padding: 25px;
+    border-radius: 10px;
+}
+
+h2 {
+    border-left: 4px solid #007bff;
+    padding-left: 10px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
+    gap: 10px;
+}
+
+input, select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+}
+
+.doc-card {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-top: 10px;
+    border-radius: 6px;
+    background: #f9fafb;
+}
+
+button {
+    margin-top: 20px;
+    padding: 12px;
+    width: 100%;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+}
+
+.add-btn {
+    background: #28a745;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<form method="POST" action="/generate_sale">
+
+<h2>Basic</h2>
+<div class="grid">
+<input name="DATE" placeholder="Date">
+<input name="APPLICATION_NO" placeholder="Application No">
+<input name="APPLICANT_NAME" placeholder="Applicant Name">
+<input name="APPLICANT_BOLD_OWNER" placeholder="Owner">
+<input name="LOAN_AMOUNT" placeholder="Loan Amount">
+</div>
+
+<h2>Property</h2>
+<div class="grid">
+<input name="DOOR_NO" placeholder="Door No">
+<input name="PLOT_NO" placeholder="Plot No">
+<input name="ASSESSMENT_NO" placeholder="Assessment No">
+<input name="EXTENT_YARDS" placeholder="Extent Yards">
+<input name="SURVEY_NO" placeholder="Survey No">
+<input name="ADDRESS" placeholder="Address">
+<input name="VILLAGE" placeholder="Village">
+<input name="GRAM_PANCHAYAT" placeholder="Gram Panchayat">
+<input name="MANDAL" placeholder="Mandal">
+<input name="SRO" placeholder="SRO">
+<input name="RO" placeholder="RO">
+<input name="DISTRICT" placeholder="District">
+</div>
+
+<h2>Boundaries</h2>
+<div class="grid">
+<input name="EAST_BOUNDARY" placeholder="East">
+<input name="WEST_BOUNDARY" placeholder="West">
+<input name="NORTH_BOUNDARY" placeholder="North">
+<input name="SOUTH_BOUNDARY" placeholder="South">
+</div>
+
+<h2>Measurements</h2>
+<div class="grid">
+<input name="E_W" placeholder="E-W">
+<input name="N_S" placeholder="N-S">
+<input name="E_W_FEET" placeholder="E-W Feet">
+<input name="N_S_FEET" placeholder="N-S Feet">
+<input name="EXTENT_FEET" placeholder="Total Sqft">
+</div>
+
+<h2>Deed</h2>
+<div class="grid">
+<input name="DEED_NO" placeholder="Deed No">
+<input name="DEED_DATE" placeholder="Deed Date">
+</div>
+
+<h2>Documents</h2>
+<div id="documents"></div>
+<button type="button" class="add-btn" onclick="addDoc()">+ Add Document</button>
+
+<h2>Extra</h2>
+<div class="grid">
+<input name="POSSESSION_DATE" placeholder="Possession Date">
+<input name="FROM_YEARS" placeholder="From Years">
+<input name="POSSESSION_NAME" placeholder="Possession Name">
+
+<input name="H_T_DATE" placeholder="House Tax Date">
+<input name="HOUSE_TAX_RECIPT_NO" placeholder="Receipt No">
+<input name="FINANCIAL_YEARS" placeholder="Financial Years">
+<input name="HOUSE_TAX_NAME" placeholder="Tax Name">
+<input name="HOUSE_TAX_ISSUED_BY" placeholder="Issued By">
+
+<input name="EC_DATE" placeholder="EC Date">
+<input name="EC_NO" placeholder="EC No">
+</div>
+
+<h2>Electricity</h2>
+<div class="grid">
+<select name="HAS_ELECTRICITY_BILL">
+<option value="">No</option>
+<option value="true">Yes</option>
+</select>
+<input name="ELECTRICITY_BILL_DATE" placeholder="Bill Date">
+<input name="SERVICE_NO" placeholder="Service No">
+<input name="ELECTRICITY_NAME" placeholder="Name">
+</div>
+
+<h2>Mortgage</h2>
+<div class="grid">
+<select name="HAS_MORTGAGE">
+<option value="">No</option>
+<option value="true">Yes</option>
+</select>
+<input name="MORTGAGE_DEED_NO" placeholder="Mortgage Deed No">
+<input name="MORTGAGE_DEED_DATE" placeholder="Mortgage Date">
+<input name="MORTGAGE_COMPANY" placeholder="Company">
+</div>
+
+<button type="submit">Generate Report</button>
+
+</form>
+</div>
+
+<script>
+function addDoc() {
+    let div = document.createElement("div");
+    div.className = "doc-card";
+
+    div.innerHTML = `
+        <div class="grid">
+            <select name="doc_type[]">
+                <option value="Sale">Sale</option>
+                <option value="Gift">Gift</option>
+            </select>
+
+            <input name="doc_number[]" placeholder="Doc No">
+            <input name="doc_date[]" placeholder="Date">
+            <input name="doc_executant[]" placeholder="Executant">
+            <input name="doc_owner[]" placeholder="Owner">
+            <input name="doc_relation[]" placeholder="Relation">
+            <input name="doc_worth[]" placeholder="Amount">
+        </div>
+    `;
+
+    document.getElementById("documents").appendChild(div);
+}
+
+addDoc();
+</script>
+
+</body>
+</html>
